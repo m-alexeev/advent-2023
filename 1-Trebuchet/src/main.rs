@@ -3,7 +3,7 @@ use std::io::{self, BufRead};
 use std::path::Path;
 
 
-fn part1(buffer: io::Lines<io::BufReader<File>>) -> u32 {
+fn part1(buffer: &mut io::Lines<io::BufReader<File>>) -> u32 {
     let mut running_sum: u32 = 0;
     for line in buffer.flatten(){
         // Find the leftmost numeric character in the line
@@ -23,11 +23,25 @@ fn part1(buffer: io::Lines<io::BufReader<File>>) -> u32 {
     return  running_sum;
 }
 
+fn part2(buffer: &mut io::Lines<io::BufReader<File>>) -> u32 {
+    let running_sum: u32 = 0;
+
+    let digits = vec!["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    for line in buffer.flatten(){
+        let mut parsed_digits: Vec<u32> = vec![];
+        for digit in digits.iter(){
+        }
+    }
+    return running_sum;
+}
+
+
 fn main() {
     // File hosts.txt must exist in the current path
-    if let Ok(lines) = read_lines("./input-1") {
+    if let Ok(mut lines) = read_lines("./sample") {
         // Consumes the iterator, returns an (Optional) String
-        println!("{}", part1(lines));
+        println!("{}", part1(&mut lines));
+        println!("{}", part2(&mut lines));
     }
 }
 
