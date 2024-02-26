@@ -32,7 +32,7 @@ fn part2(buffer: &Vec<String>) -> u32 {
         // search until first digit can be represented by a number or a string
         // Find the leftmost numeric character in the line
         let left = line.chars().find(|ch| ch.is_numeric());
-
+        println!("{}", left.unwrap());
         // Find the rightmost numeric character in the line
         // let right = line.chars().rev().find(|ch| ch.is_numeric());
         //
