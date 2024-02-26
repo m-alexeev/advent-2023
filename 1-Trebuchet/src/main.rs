@@ -24,28 +24,41 @@ fn part1(buffer: &Vec<String>) -> u32 {
 }
 
 fn part2(buffer: &Vec<String>) -> u32 {
-    let running_sum: u32 = 0;
+    let mut running_sum: u32 = 0;
 
     let digits = vec![
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
     for line in buffer {
         // search until first digit can be represented by a number or a string
-        let mut match_indices: Vec<_> = vec![];
+        // Find all occurences of the words 
+        let mut match_indices: Vec<(usize, &str)> = vec![];
         for digit in &digits {
             let mut matches: Vec<_> = line.match_indices(digit).collect();
             if matches.len() > 0 {
                 match_indices.append(&mut matches);
             }
         }
-        println!("{:?}", match_indices);
+        // Find all occurences of numbers
+        for (i, char) in line.chars().enumerate() {
+            if char.is_numeric() {
+                let d: usize = char.to_digit(10).unwrap() as usize;
+                match_indices.push((i, digits[d]));
+            }
+        }
+        // Get min and max index and sum the values at the min * 10 and max 
+        match_indices.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+        let left = digits.iter().position(|&x | x == match_indices[0].1).unwrap() as u32;
+        let right = digits.iter().position(|&x| x == match_indices[match_indices.len() - 1].1).unwrap() as u32;
+
+        running_sum = running_sum + (left * 10) + right; 
     }
-    return running_sum;
+    running_sum
 }
 
 fn main() {
     // File hosts.txt must exist in the current path
-    if let Ok(lines) = read_lines("./sample-2") {
+    if let Ok(lines) = read_lines("./input") {
         // Consumes the iterator, returns an (Optional) String
         let buffer: Vec<String> = lines.flatten().map(String::from).collect();
         println!("{}", part1(&buffer));
