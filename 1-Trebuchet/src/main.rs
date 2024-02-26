@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
+use std::usize;
 
 fn part1(buffer: &Vec<String>) -> u32 {
     let mut running_sum: u32 = 0;
@@ -25,19 +26,19 @@ fn part1(buffer: &Vec<String>) -> u32 {
 fn part2(buffer: &Vec<String>) -> u32 {
     let running_sum: u32 = 0;
 
-    let _digits = vec![
-        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    let digits = vec![
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
     for line in buffer {
         // search until first digit can be represented by a number or a string
-        // Find the leftmost numeric character in the line
-        let left = line.chars().find(|ch| ch.is_numeric());
-        println!("{}", left.unwrap());
-        // Find the rightmost numeric character in the line
-        // let right = line.chars().rev().find(|ch| ch.is_numeric());
-        //
-        // let mut parsed_digits: Vec<u32> = vec![];
-        // for digit in digits.iter() {}
+        let mut match_indices: Vec<_> = vec![];
+        for digit in &digits {
+            let mut matches: Vec<_> = line.match_indices(digit).collect();
+            if matches.len() > 0 {
+                match_indices.append(&mut matches);
+            }
+        }
+        println!("{:?}", match_indices);
     }
     return running_sum;
 }
