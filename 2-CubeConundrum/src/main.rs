@@ -49,23 +49,18 @@ fn part1(buffer: &Vec<String>) -> u32 {
                 if color == Color::Blue {
                     if count > BLUE_CUBES {
                         add = false;
-                        println!("{:?}, {:?}", color, count);
                         break;
                     }
                 }
                 if color == Color::Green {
                     if count > GREEN_CUBES {
                         add = false;
-                        println!("{:?}, {:?}", color, count);
-
                         break;
                     }
                 }
                 if color == Color::Red {
                     if count > RED_CUBES {
                         add = false;
-                        println!("{:?}, {:?}", color, count);
-
                         break;
                     }
                 }
