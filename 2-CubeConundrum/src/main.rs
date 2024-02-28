@@ -76,8 +76,57 @@ fn part1(buffer: &Vec<String>) -> u32 {
     game_id_sum
 }
 
-fn part2(_buffer: &Vec<String>) -> u32 {
-    0
+fn part2(buffer: &Vec<String>) -> u32 {
+    let mut game_power_sum: u32 = 0;
+    let mut min_cubes: Vec<u32> = vec![0,0,0];
+    for line in buffer {
+        let color_str = line.split(":").collect::<Vec<&str>>()[1]
+            .strip_prefix(" ")
+            .unwrap();
+
+        let color_combos: Vec<&str> = color_str.split(";").collect::<Vec<&str>>();
+
+        for combo in color_combos {
+            let combo_strs = combo.split(",").map(|x| x.trim()).collect::<Vec<&str>>();
+            let color_counts: Vec<(u32, Color)> = combo_strs
+                .iter()
+                .map(|x| {
+                    let mapping: Vec<&str> = x.split(" ").collect();
+                    (
+                        mapping[0].parse::<u32>().unwrap(),
+                        match mapping[1] {
+                            "green" => Color::Green,
+                            "blue" => Color::Blue,
+                            "red" => Color::Red,
+                            _ => Color::Red,
+                        },
+                    )
+                })
+                .collect();
+            for (count, color) in color_counts {
+                if color == Color::Red{
+                    if count > min_cubes[0]{
+                        min_cubes[0] = count;
+                    }
+                }
+                if color == Color::Green{
+                    if count > min_cubes[1]{
+                        min_cubes[1] = count;
+                    }
+                }
+                if color == Color::Blue{
+                    if count > min_cubes[2]{
+                        min_cubes[2] = count;
+                    }
+                }
+            }
+
+        }
+        game_power_sum = game_power_sum + (min_cubes[0] * min_cubes[1] * min_cubes[2]);
+
+        min_cubes = vec![0,0,0];
+    }
+    game_power_sum 
 }
 
 fn main() {
