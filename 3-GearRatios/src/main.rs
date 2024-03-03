@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -71,8 +72,79 @@ fn part1(buffer: &Vec<String>) -> u32 {
     part_sum
 }
 
-fn part2(_buffer: &Vec<String>) -> u32 {
-    0
+fn part2(buffer: &Vec<String>) -> u32 {
+    let mut gear_dict: HashMap<(i32, i32), (u32, u32)> = HashMap::new();
+    for (i, line) in buffer.iter().enumerate() {
+        let mut current_num: String = String::from("");
+        let mut add_index = (-1, -1);
+        for (j, char) in line.chars().enumerate() {
+            // println!("Char: {}", char);
+            match char.to_string().parse::<u32>() {
+                Ok(_) => {
+                    for x in -1..2 {
+                        for y in -1..2 {
+                            let row_index = i as i32 + x;
+                            let col_index = j as i32 + y;
+                            if x == 0 && y == 0 {
+                                continue;
+                            }
+                            // Checks surrounding cells
+                            if row_index >= 0
+                                && row_index < buffer.len() as i32
+                                && col_index >= 0
+                                && col_index < buffer.len() as i32
+                            {
+                                let symbol = buffer[row_index as usize]
+                                    .chars()
+                                    .nth(col_index as usize)
+                                    .unwrap();
+                                if symbol == '*' {
+                                    add_index = (row_index, col_index);
+                                }
+                            }
+                        }
+                    }
+                    current_num.push(char)
+                }
+                Err(_) => {
+                    if !current_num.is_empty() {
+                        if add_index.0 > 0 {
+                            if let Some(counts) = gear_dict.get_mut(&(add_index.0, add_index.1)) {
+                                *counts =
+                                    (counts.0 + 1, counts.1 * current_num.parse::<u32>().unwrap());
+                            } else {
+                                gear_dict.insert(
+                                    (add_index.0, add_index.1),
+                                    (1, current_num.parse::<u32>().unwrap()),
+                                );
+                            }
+                        }
+                        current_num = String::from("");
+                        add_index = (-1, -1);
+                    }
+                }
+            }
+        }
+        if !current_num.is_empty() {
+            if add_index.0 > 0 {
+                if let Some(counts) = gear_dict.get_mut(&(add_index.0, add_index.1)) {
+                    *counts = (counts.0 + 1, counts.1 * current_num.parse::<u32>().unwrap());
+                } else {
+                    gear_dict.insert(
+                        (add_index.0, add_index.1),
+                        (1, current_num.parse::<u32>().unwrap()),
+                    );
+                }
+            }
+        }
+    }
+    let mut gear_sum: u32 = 0;
+    for count in gear_dict {
+        if count.1 .0 == 2 {
+            gear_sum += count.1 .1;
+        }
+    }
+    gear_sum
 }
 
 fn main() {
