@@ -42,13 +42,40 @@ fn part1(buffer: &Vec<String>) -> u32 {
     points
 }
 
-fn part2(_buffer: &Vec<String>) -> u32 {
+fn process_cards(buffer: &Vec<String>, bounds: (usize, usize)) -> u32 {
+    //BUG: stuck in endless loop should
+    //BUG: Add to current sum instead of returning last count
+    
+    // for (i, line) in buffer[bounds.0..bounds.1].iter().enumerate() {
+    for i in bounds.0..bounds.1{
+        let line = &buffer[i];
+        let split_line = line.split("|").collect::<Vec<&str>>();
+        let winning_numbers = str_to_number_vec(split_line[0].split(":").collect::<Vec<&str>>()[1]);
+        let player_numbers = str_to_number_vec(split_line[1]);
+
+        let mut num_matches = 0;
+        for num in &player_numbers {
+            if winning_numbers.contains(num) {
+                num_matches += 1;
+            }
+        }
+        println!("{:?}", num_matches);
+        println!("{:?}", &buffer[bounds.0..bounds.1]);
+
+        return process_cards(&buffer, (i+1, i + num_matches + 1));
+    }
+    // return 0 if loop does not iterate (base case)
     0
+}
+
+fn part2(buffer: &Vec<String>) -> u32 {
+    let scratch_cards = process_cards(buffer, (0, buffer.len() - 1));
+    scratch_cards
 }
 
 fn main() {
     // File hosts.txt must exist in the current path
-    if let Ok(lines) = read_lines("./input") {
+    if let Ok(lines) = read_lines("./sample-2") {
         // Consumes the iterator, returns an (Optional) String
         let buffer: Vec<String> = lines.flatten().map(String::from).collect();
         println!("{}", part1(&buffer));
