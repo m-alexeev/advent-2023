@@ -43,9 +43,7 @@ fn part1(buffer: &Vec<String>) -> u32 {
 }
 
 fn process_cards(buffer: &Vec<String>, bounds: (usize, usize)) -> u32 {
-    //BUG: stuck in endless loop should
-    //BUG: Add to current sum instead of returning last count
-    
+    let mut sum = 0; 
     // for (i, line) in buffer[bounds.0..bounds.1].iter().enumerate() {
     for i in bounds.0..bounds.1{
         let line = &buffer[i];
@@ -59,23 +57,20 @@ fn process_cards(buffer: &Vec<String>, bounds: (usize, usize)) -> u32 {
                 num_matches += 1;
             }
         }
-        println!("{:?}", num_matches);
-        println!("{:?}", &buffer[bounds.0..bounds.1]);
-
-        return process_cards(&buffer, (i+1, i + num_matches + 1));
+        sum += num_matches as u32 + process_cards(&buffer, (i + 1, i + num_matches + 1));
     }
     // return 0 if loop does not iterate (base case)
-    0
+    return sum 
 }
 
 fn part2(buffer: &Vec<String>) -> u32 {
-    let scratch_cards = process_cards(buffer, (0, buffer.len() - 1));
+    let scratch_cards = buffer.len() as u32 + process_cards(buffer, (0, buffer.len()));
     scratch_cards
 }
 
 fn main() {
     // File hosts.txt must exist in the current path
-    if let Ok(lines) = read_lines("./sample-2") {
+    if let Ok(lines) = read_lines("./input") {
         // Consumes the iterator, returns an (Optional) String
         let buffer: Vec<String> = lines.flatten().map(String::from).collect();
         println!("{}", part1(&buffer));
